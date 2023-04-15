@@ -8,6 +8,7 @@ int klucz;
 std::string pakiet;
 elementkol* next;
 elementkol(int k, std::string p);
+elementkol(int k);
 elementkol();
 };
 
@@ -16,6 +17,12 @@ elementkol::elementkol(int k, std::string p)
 {
     klucz=k;
     pakiet=p;
+    next=0;
+}
+
+elementkol::elementkol(int k)
+{
+    klucz=k;
     next=0;
 }
 elementkol::elementkol()
@@ -196,37 +203,39 @@ elementkol kolejkaprio::removeMin()
 
 int main()
 {
-    //std::string pakiet1="ola";
-    //std::string pakiet2="ala";
-    //std::string pakiet3="pola";
-   
-    elementkol* temp1 = new elementkol(2,"ola");
-    elementkol* temp2 = new elementkol(3,"ala");
-    elementkol* temp3 = new elementkol(1,"pola");
-    elementkol* temp4 = new elementkol(4,"ila");
+    std::string wiadomosc;
+    std::string wiadomoscwyslana;
+    std::string wiadomoscodebrana;
+    int dlugoscwiadomosci;
+    int dlugoscpakietumin;
+    int j=0;
+    elementkol* pakiet1 = new elementkol(1);
+    elementkol* pakiet2 = new elementkol(2);
+    elementkol* pakiet3 = new elementkol(3);
+    elementkol* pakiet4 = new elementkol(4);
+    elementkol* pakiet5 = new elementkol(5);
 
+    getline(std::cin,wiadomosc);
 
-    kolejkaprio kolejka;
+    dlugoscwiadomosci=wiadomosc.length();
+    dlugoscpakietumin=dlugoscwiadomosci/5;
 
-    kolejka.insert(temp1->klucz,temp1->pakiet);
-    kolejka.insert(temp2->klucz,temp2->pakiet);
-    kolejka.insert(temp3->klucz,temp3->pakiet);
+    pakiet1->pakiet=wiadomosc.substr(0,dlugoscpakietumin);
+    pakiet2->pakiet=wiadomosc.substr(dlugoscpakietumin,dlugoscpakietumin);
+    pakiet3->pakiet=wiadomosc.substr(dlugoscpakietumin*2,dlugoscpakietumin);
+    pakiet4->pakiet=wiadomosc.substr(dlugoscpakietumin*3,dlugoscpakietumin);
+    pakiet5->pakiet=wiadomosc.substr(dlugoscpakietumin*4);
     
-    kolejka.WyswietlKolejke();
-    std::cout<<kolejka.size()<<std::endl;
-    std::cout<<kolejka.Min().pakiet<<std::endl;
-    kolejka.removeMin();
-    std::cout<<kolejka.Min().pakiet<<std::endl;
-    kolejka.removeMin();
-    kolejka.insert(temp4->klucz,temp4->pakiet);
-    kolejka.removeMin();
-    kolejka.WyswietlKolejke();
-    std::cout<<kolejka.size()<<std::endl;
+
+    
 
 
-    delete (temp1);
-    delete (temp2);
-    delete (temp3);
+
+    delete pakiet1;
+    delete pakiet2;
+    delete pakiet3;
+    delete pakiet4;
+    delete pakiet5;
 
     return 0;
 }
