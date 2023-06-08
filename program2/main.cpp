@@ -15,6 +15,8 @@
 struct film {
     std::string nazwa;  // nazwa filmu
     int ocena;      // ocena filmu od 0 do 10
+    bool operator<(film porow) { return (ocena < porow.ocena); }
+    bool operator>(film porow) { return (ocena > porow.ocena); }
 };
 
 int main() 
@@ -26,8 +28,8 @@ int main()
     std::ofstream PosortowanaBazaFilmow;  // posortowana baza  filmow (zapisywany plik)
     std::string NazwaPosortowanejBazyFilmow="PosortowanaBazaFilmow.csv";
 
-    std::ofstream SPrzefiltrowanaBaza;  // posortowana baza  filmow (zapisywany plik)
-    std::string SNazwaPrzefiltrowanejBazy="PrzefiltrowanaBazaFilmow.csv";
+    // std::ofstream SPrzefiltrowanaBaza;  // posortowana baza  filmow (zapisywany plik)
+    // std::string SNazwaPrzefiltrowanejBazy="PrzefiltrowanaBazaFilmow.csv";
 
 
     // sortowania
@@ -40,7 +42,10 @@ int main()
   
 
     int nieocenione;
-
+    float srednia;
+    float mediana;
+    float suma;
+    std::string sortowania[] = {"merge", "quick", "intro"};
 
     // // testy
     // unsigned int test = 0;    // numer testu
@@ -105,8 +110,8 @@ int main()
         }
         auto koniec = std::chrono::high_resolution_clock::now();  // koniec mierzenia czasu
         auto czas = std::chrono::duration<double, std::milli>(koniec - start).count();
-
         delete[] Przeszukiwanie;
+       
 
         // Wypisywanie obliczonego czasu i liczby wpisow
         if (nieocenione > 0)
@@ -114,22 +119,62 @@ int main()
             std::cout << "Po przefiltrowaniu: " << rozmiar - nieocenione << '\n'
             << "Czas filtrowania:   " << czas << " ms\n";
             }
+        // sortowanie 
+        // zmienne przechowujace wyniki
+        film* merge = PrzefiltrowanaBazaFilmow;
+        film* quick = PrzefiltrowanaBazaFilmow;
+        film* intro = PrzefiltrowanaBazaFilmow;
+
+        
+         
+        // mergesort
+        auto start_sort = std::chrono::high_resolution_clock::now();
+        mergeSort(merge, 0, rozmiar - nieocenione - 1);
+        auto koniec_sort = std::chrono::high_resolution_clock::now();
+        auto czas_sortowania= std::chrono::duration<double, std::milli>(koniec_sort- start_sort).count();  
+
+        // liczenie sredniej wartosci
+        suma=0;
+        for(int i=0;i<(rozmiar-nieocenione);i++)
+        {
+            suma=suma+merge[i].ocena;
+        }
+        srednia=suma/(rozmiar-nieocenione);
+
+        // liczenie mediany
+        if( (rozmiar-nieocenione)%2==0)
+            {
+            mediana =  ( merge[ (rozmiar-nieocenione)/2].ocena  + merge[ (rozmiar-nieocenione)/2 -1].ocena    )/2;
+            }
+        else
+            {
+            mediana=merge[ (rozmiar-nieocenione)/2].ocena;
+            }
+        
+        // wypisywanie wynikow mediany i sredniej oraz czasu sortowania
+        std::cout<<"Srednia wynosi: "<<srednia<<std::endl;
+        std::cout<<"Mediana wynosi: "<<mediana<<std::endl;
+        std::cout<<"Czas sortowania wynosi: "<<czas_sortowania<<"ms"<<std::endl;
+
+        // wypisanie posortowanej bazy do pliku
+            
         // otwieranie pliku do zapisu
-            SPrzefiltrowanaBaza.open(SNazwaPrzefiltrowanejBazy);
+            PosortowanaBazaFilmow.open(NazwaPosortowanejBazyFilmow);
         // Wypisywanie przefiltrowanej listy bez pustych wpisow
-            SPrzefiltrowanaBaza<<",movie,rating"<<std::endl;
+            PosortowanaBazaFilmow<<",movie,rating"<<std::endl;
 
             for(int i=0; i<rozmiar-nieocenione; i++)
             {
-                SPrzefiltrowanaBaza<<i<<",\""<<PrzefiltrowanaBazaFilmow[i].nazwa
-                <<"\","<<PrzefiltrowanaBazaFilmow[i].ocena<<"\n";
+                PosortowanaBazaFilmow<<i<<",\""<<merge[i].nazwa
+                <<"\","<<merge[i].ocena<<"\n";
             }
-            SPrzefiltrowanaBaza.close();
-            delete [] PrzefiltrowanaBazaFilmow;
+            std::cout<<"Posortowano baze i zapisano do pliku\n";
             
-            std::cout<<"Przefiltrowano baze i zapisano do pliku\n";
+            PosortowanaBazaFilmow.close();
+            delete [] merge;
 
 
+           
     return 0;
         
 }
