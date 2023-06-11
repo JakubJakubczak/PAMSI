@@ -1,29 +1,29 @@
 #pragma once
 
 template <typename T>
-int partition(T* array, int start, int end) {
-    T temp, pivot = array[(start + end) / 2];  // element srodkowy
-    int l = start, r = end;                    // iteratory dla podtablic lewej i prawej
+int partition(T* tab, int start, int koniec) {
+    T temp, pivot = tab[(start + koniec) / 2];  // piwot wybieramy jako srodek
+    int l = start, r = koniec;                   
     while (1) {
-        while (array[l] < pivot) l++;  // dopoki po lewej sa mniejsze od srodkowego
-        while (array[r] > pivot) r--;  // dopoki po prawej sa wieksze od srodkowego
+        while (tab[l] < pivot) l++;  //  iteruje  lewa strone dopoki element jest mniejszy od pivota
+        while (tab[r] > pivot) r--;  // inkrementuje prawa strone dopoki element jest wiekszy od pivota
 
         if (l >= r)
-            return r;  // element osiowy
+            return r;  // jesli l dojdzie do r to zwraca ten element
 
-        // zamien elementy - mniejszy na lewo, wiekszy na prawo
-        temp = array[l];
-        array[l++] = array[r];
-        array[r--] = temp;
+        // zamien elementy 
+        temp = tab[l];
+        tab[l++] = tab[r];
+        tab[r--] = temp;
     }
 }
 
 template <typename T>
-void quickSort(T* array, int start, int end) {
-    // rekurencyjne dzielenie na 2 podtablice az do uzyskania jednoelementowych
-    if (start >= 0 && start < end) {
-        int pivot = partition(array, start, end);  // element osiowy
-        quickSort(array, start, pivot);            // lewa podtablica
-        quickSort(array, pivot + 1, end);          // prawa podtablica
+void quickSort(T* tab, int start, int koniec) {
+    // rekurencyjne dzielenie na 2 podtablice  do momentu uzyskania jednoelementowych
+    if (start >= 0 && start < koniec) {
+        int pivot = partition(tab, start, koniec);  
+        quickSort(tab, start, pivot);            // lewa podtablica
+        quickSort(tab, pivot + 1, koniec);          // prawa podtablica
     }
 }

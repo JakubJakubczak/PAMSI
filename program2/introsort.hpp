@@ -6,68 +6,68 @@
 #include "quicksort.hpp"
 
 template <typename T>
-void insertionSort(T* array, int start, int end) {
-    T key;  // klucz (do porownywania)
+void insertionSort(T* tab, int start, int koniec) {
+    T klucz;  
     int i, j;
-    for (i = start + 1; i < end; i++) {
-        key = array[i];  // zaczynamy od 2 elementu arraylicy
+    for (i = start + 1; i < koniec; i++) {
+        klucz = tab[i];  // zaczynamy od 2 elementu tablicy
         j = i - 1;
-        // porownanie klucza z kolejnymi poprzednimi elementami
-        while (j >= start && key < array[j]) {
-            array[j + 1] = array[j];
+        // porownanie klucza 
+        while (j >= start && klucz < tab[j]) {
+            tab[j + 1] = tab[j];
             --j;
         }
-        array[j + 1] = key;
+        tab[j + 1] = klucz;
     }
 }
 
 template <typename T>
-void heapify(T* array, int heap_size, int i) {
+void heapify(T* tab, int heap_size, int i) {
     T temp;
     int largest, l = 2 * i, r = (2 * i) + 1;
-    if (l <= heap_size && array[l] > array[i])
+    if (l <= heap_size && tab[l] > tab[i])
         largest = l;
     else
         largest = i;
-    if (r <= heap_size && array[r] > array[largest])
+    if (r <= heap_size && tab[r] > tab[largest])
         largest = r;
     if (largest != i) {
-        temp = array[largest];
-        array[largest] = array[i];
-        array[i] = temp;
-        heapify(array, heap_size, largest);
+        temp = tab[largest];
+        tab[largest] = tab[i];
+        tab[i] = temp;
+        heapify(tab, heap_size, largest);
     }
 }
 
 template <typename T>
-void heapSort(T* array, int heap_size) {
+void heapSort(T* tab, int heap_size) {
     T temp;
     for (int i = heap_size / 2; i > 0; i--)
-        heapify(array, heap_size, i);
+        heapify(tab, heap_size, i);
     for (int i = heap_size; i > 1; i--) {
-        temp = array[i];
-        array[i] = array[1];
-        array[1] = temp;
+        temp = tab[i];
+        tab[i] = tab[1];
+        tab[1] = temp;
         heap_size--;
-        heapify(array, heap_size, 1);
+        heapify(tab, heap_size, 1);
     }
 }
 
 template <typename T>
-void introSort(T* array, int start, int end, int maxdepth) {
-    if (maxdepth <= 0) {
-        heapSort(array, end - start);
+void introSort(T* tab, int start, int koniec, int glebokosc) {
+    if (glebokosc <= 0) {
+        heapSort(tab, koniec - start);
         return;
     }
-    int i = partition(array, start, end);
+    int i = partition(tab, start, koniec);
     if (i > 9)
-        introSort(array, start, i, maxdepth - 1);
-    if (end - i > 9)
-        introSort(array, i + 1, end, maxdepth - 1);
+        introSort(tab, start, i, glebokosc - 1);
+    if (koniec - i > 9)
+        introSort(tab, i + 1, koniec, glebokosc - 1);
 }
 
 template <typename T>
-void hybridIntroSort(T* array, int start, int end) {
-    introSort(array, start, end, (2 * log(end - start)));
-    insertionSort(array, start, end);
+void hybridIntroSort(T* tab, int start, int koniec) {
+    introSort(tab, start, koniec, (2 * log(koniec - start)));
+    insertionSort(tab, start, koniec);
 }

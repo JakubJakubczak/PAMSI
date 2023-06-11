@@ -28,27 +28,16 @@ int main()
     std::ofstream PosortowanaBazaFilmow;  // posortowana baza  filmow (zapisywany plik)
     std::string NazwaPosortowanejBazyFilmow="PosortowanaBazaFilmow";
 
-    // std::ofstream SPrzefiltrowanaBaza;  // posortowana baza  filmow (zapisywany plik)
-    // std::string SNazwaPrzefiltrowanejBazy="PrzefiltrowanaBazaFilmow.csv";
-
-
-    // sortowania
-   // std::string sorts[3] = { "merge", "quick", "intro" };
-
     // zmienne pomocnicze do przeszukiwania pliku
     std::string temp,linia;  // pojedynczy wpis w bazie
     char znak;         // , lub "
     int rozmiar = 405366; // ilość danych w bazie filmów 
   
-
     int nieocenione;
     float srednia;
     float mediana;
     float suma;
     std::string sortowania[] = {"merge", "quick", "intro"};
-
-    
-
 
     film* Przeszukiwanie = new film[rozmiar]; // struktura pozwalajaca przeszukac BazeFilmow
     nieocenione = 0; 
@@ -136,7 +125,6 @@ int main()
         for(int i=0; i<std::size(sortowania); i++)
     {
         std::cout<<"Sortowanie "<<sortowania[i]<<std::endl;
-        // mergesort
         auto start_sort = std::chrono::high_resolution_clock::now();
         if(sortowania[i]=="merge") mergeSort(merge, 0, rozmiar - nieocenione - 1);
         else if(sortowania[i]=="quick") quickSort(quick, 0, rozmiar - nieocenione - 1);
@@ -191,8 +179,6 @@ int main()
         // dane zostaly wygenerowane za pomoca strony numbergenerator.org i jest to 4 miliony losowych liczb z zakresu 1 - 1000000.
         // testy zostana przeprowadzone na roznej ilosci danych: 10 000, 100 000, 500 000, 1 000 000, 4 000 000
 
-
-
         // Przygotowanie strumieni, ktore beda wykorzystywane
         std::ifstream DaneWej;  
         std::string NazwaDaneWej = "dane.csv";
@@ -202,8 +188,7 @@ int main()
 
         int ntab[] = { 10000, 100000, 500000, 1000000, 2000000 };
         std::string liczby[] = {"10000", "100000", "500000", "1000000", "2000000" };
-
-        
+   
         for(int i=0; i<std::size(ntab);i++)
         {
             DaneWej.open(NazwaDaneWej);
@@ -272,7 +257,6 @@ int main()
         // otwieranie pliku do zapisu
             PosortowaneDaneWej.open(NazwaPosortowanychDaneWej + "_"+sortowania[j]+liczby[i]+".csv");
         // Wypisywanie juz przesortowane
-           // PosortowanaBazaFilmow<<",movie,rating"<<std::endl;
 
                 for(int k=0; k<ntab[i]; k++)
                 {
@@ -281,14 +265,10 @@ int main()
              PosortowaneDaneWej.close();
     }
             std::cout<<"Posortowano baze i zapisano do pliku\n";
-            
-            
+                       
             delete [] merge;
             delete [] quick;
-            delete [] intro;
-
-            
-            
+            delete [] intro;          
         }
            
     return 0;
