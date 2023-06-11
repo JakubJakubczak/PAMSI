@@ -26,14 +26,14 @@ int main()
     std::ifstream BazaFilmow;  // baza filmow (wczytywany plik)
     std::string NazwaBazyFilmow = "projekt2_dane.csv";
     std::ofstream PosortowanaBazaFilmow;  // posortowana baza  filmow (zapisywany plik)
-    std::string NazwaPosortowanejBazyFilmow="PosortowanaBazaFilmow.csv";
+    std::string NazwaPosortowanejBazyFilmow="PosortowanaBazaFilmow";
 
     // std::ofstream SPrzefiltrowanaBaza;  // posortowana baza  filmow (zapisywany plik)
     // std::string SNazwaPrzefiltrowanejBazy="PrzefiltrowanaBazaFilmow.csv";
 
 
     // sortowania
-    std::string sorts[3] = { "merge", "quick", "intro" };
+   // std::string sorts[3] = { "merge", "quick", "intro" };
 
     // zmienne pomocnicze do przeszukiwania pliku
     std::string temp,linia;  // pojedynczy wpis w bazie
@@ -47,12 +47,7 @@ int main()
     float suma;
     std::string sortowania[] = {"merge", "quick", "intro"};
 
-    // // testy
-    // unsigned int test = 0;    // numer testu
-    // unsigned int nlimit = 0;  // limit n dla zapisu na sorted_dataset
-    // unsigned int ntab[] = { 10000, 100000, 500000, 1000000, 1010292 };
-    // unsigned int unrated, median;  // ilosc nieocenionych filmow, mediana ocen
-    // float average;                 // srednia ocen
+    
 
 
     film* Przeszukiwanie = new film[rozmiar]; // struktura pozwalajaca przeszukac BazeFilmow
@@ -121,34 +116,50 @@ int main()
             }
         // sortowanie 
         // zmienne przechowujace wyniki
-        film* merge = PrzefiltrowanaBazaFilmow;
-        film* quick = PrzefiltrowanaBazaFilmow;
-        film* intro = PrzefiltrowanaBazaFilmow;
+        film* merge = new film[rozmiar-nieocenione];
+        film* quick = new film[rozmiar-nieocenione];
+        film* intro = new film[rozmiar-nieocenione];
 
-        
-         
+        film* tabsort[3] = {merge,quick,intro};
+
+        // Przepisanie wartosci
+        for(int i=0; i<std::size(tabsort);i++)
+        {
+        for(int j=0; j<(rozmiar - nieocenione);j++)
+        {
+            tabsort[i][j].ocena=PrzefiltrowanaBazaFilmow[j].ocena;
+            tabsort[i][j].nazwa=PrzefiltrowanaBazaFilmow[j].nazwa;
+        }
+        }
+        delete [] PrzefiltrowanaBazaFilmow;
+        // petla dla 3 sortowan
+        for(int i=0; i<std::size(sortowania); i++)
+    {
+        std::cout<<"Sortowanie "<<sortowania[i]<<std::endl;
         // mergesort
         auto start_sort = std::chrono::high_resolution_clock::now();
-        mergeSort(merge, 0, rozmiar - nieocenione - 1);
+        if(sortowania[i]=="merge") mergeSort(merge, 0, rozmiar - nieocenione - 1);
+        else if(sortowania[i]=="quick") quickSort(quick, 0, rozmiar - nieocenione - 1);
+        else if(sortowania[i]=="intro") hybridIntroSort(intro, 0, rozmiar - nieocenione - 1);
         auto koniec_sort = std::chrono::high_resolution_clock::now();
         auto czas_sortowania= std::chrono::duration<double, std::milli>(koniec_sort- start_sort).count();  
 
         // liczenie sredniej wartosci
         suma=0;
-        for(int i=0;i<(rozmiar-nieocenione);i++)
+        for(int j=0;j<(rozmiar-nieocenione);j++)
         {
-            suma=suma+merge[i].ocena;
+            suma=suma+tabsort[i][j].ocena;
         }
         srednia=suma/(rozmiar-nieocenione);
 
         // liczenie mediany
         if( (rozmiar-nieocenione)%2==0)
             {
-            mediana =  ( merge[ (rozmiar-nieocenione)/2].ocena  + merge[ (rozmiar-nieocenione)/2 -1].ocena    )/2;
+            mediana =  ( tabsort[i][ (rozmiar-nieocenione)/2].ocena  + tabsort[i][ (rozmiar-nieocenione)/2 -1].ocena    )/2;
             }
         else
             {
-            mediana=merge[ (rozmiar-nieocenione)/2].ocena;
+            mediana=tabsort[i][ (rozmiar-nieocenione)/2].ocena;
             }
         
         // wypisywanie wynikow mediany i sredniej oraz czasu sortowania
@@ -159,21 +170,126 @@ int main()
         // wypisanie posortowanej bazy do pliku
             
         // otwieranie pliku do zapisu
-            PosortowanaBazaFilmow.open(NazwaPosortowanejBazyFilmow);
-        // Wypisywanie przefiltrowanej listy bez pustych wpisow
+            PosortowanaBazaFilmow.open(NazwaPosortowanejBazyFilmow + "_"+sortowania[i]+".csv");
+        // Wypisywanie juz przesortowane
             PosortowanaBazaFilmow<<",movie,rating"<<std::endl;
 
-            for(int i=0; i<rozmiar-nieocenione; i++)
+            for(int j=0; j<rozmiar-nieocenione; j++)
             {
-                PosortowanaBazaFilmow<<i<<",\""<<merge[i].nazwa
-                <<"\","<<merge[i].ocena<<"\n";
+                PosortowanaBazaFilmow<<i<<",\""<<tabsort[i][j].nazwa
+                <<"\","<<tabsort[i][j].ocena<<"\n";
             }
+             PosortowanaBazaFilmow.close();
+    }
             std::cout<<"Posortowano baze i zapisano do pliku\n";
             
-            PosortowanaBazaFilmow.close();
+            
             delete [] merge;
+            delete [] quick;
+            delete [] intro;
+        // w drugiej czesci programu zostanie sprawdzona efektywnosc sortowania oraz bedzie liczona  srednia i mediana zestawu danych.
+        // dane zostaly wygenerowane za pomoca strony numbergenerator.org i jest to 4 miliony losowych liczb z zakresu 1 - 1000000.
+        // testy zostana przeprowadzone na roznej ilosci danych: 10 000, 100 000, 500 000, 1 000 000, 4 000 000
 
 
+
+        // Przygotowanie strumieni, ktore beda wykorzystywane
+        std::ifstream DaneWej;  
+        std::string NazwaDaneWej = "dane.csv";
+        std::ofstream PosortowaneDaneWej;  
+        std::string NazwaPosortowanychDaneWej="PosortowanaBaza";
+
+
+        int ntab[] = { 10000, 100000, 500000, 1000000, 2000000 };
+        std::string liczby[] = {"10000", "100000", "500000", "1000000", "2000000" };
+
+        
+        for(int i=0; i<std::size(ntab);i++)
+        {
+            DaneWej.open(NazwaDaneWej);
+            std::cout<<"Test na danych o rozmiarze: "<<ntab[i]<<std::endl;
+            int* Dane = new int[ntab[i]];
+            for(int j=0; j<ntab[i];j++)  // zczytywanie liczb
+            {
+                DaneWej>>Dane[j];
+                
+            }
+            DaneWej.close();
+
+        int* merge = new int[ntab[i]];
+        int* quick = new int[ntab[i]];
+        int* intro = new int[ntab[i]];
+
+        int* tabsort[3] = {merge,quick,intro};
+
+        // Przepisanie wartosci
+            for(int j=0; j<std::size(tabsort);j++)
+             {
+                for(int k=0; k<ntab[i];k++)
+                 {
+            tabsort[j][k]=Dane[k];
+                 }
+             }
+             delete [] Dane;
+
+        std::cout<<"Dalej sortowania beda wykonywane na przygotowanych danych "<<std::endl;
+         // petla dla 3 sortowan
+            for(int j=0; j<std::size(sortowania); j++)
+            {
+        std::cout<<"Sortowanie "<<sortowania[j]<<" "<<ntab[i]<<std::endl;
+        // mergesort
+        auto start_sort = std::chrono::high_resolution_clock::now();
+        if(sortowania[j]=="merge") mergeSort(merge, 0, ntab[i]- 1);
+        else if(sortowania[j]=="quick") quickSort(quick, 0, ntab[i]- 1);
+        else if(sortowania[j]=="intro") hybridIntroSort(intro, 0, ntab[i] - 1);
+        auto koniec_sort = std::chrono::high_resolution_clock::now();
+        auto czas_sortowania= std::chrono::duration<double, std::milli>(koniec_sort- start_sort).count();  
+
+        // liczenie sredniej wartosci
+        suma=0;
+                for(int k=0;k<(ntab[i]);k++)
+                 {
+            suma=suma+tabsort[j][k];
+                 }
+        srednia=suma/ntab[i];
+        // liczenie mediany
+        if( (ntab[i])%2==0)
+            {
+            mediana =  ( tabsort[j][ (ntab[i])/2]  + tabsort[j][ (ntab[i])/2 -1]   )/2;
+            }
+        else
+            {
+            mediana=tabsort[j][ (ntab[i])/2];
+            }
+        
+        // wypisywanie wynikow mediany i sredniej oraz czasu sortowania
+        std::cout<<"Srednia wynosi: "<<srednia<<std::endl;
+        std::cout<<"Mediana wynosi: "<<mediana<<std::endl;
+        std::cout<<"Czas sortowania wynosi: "<<czas_sortowania<<"ms"<<std::endl;
+
+        // wypisanie posortowanej bazy do pliku
+            
+        // otwieranie pliku do zapisu
+            PosortowaneDaneWej.open(NazwaPosortowanychDaneWej + "_"+sortowania[j]+liczby[i]+".csv");
+        // Wypisywanie juz przesortowane
+           // PosortowanaBazaFilmow<<",movie,rating"<<std::endl;
+
+                for(int k=0; k<ntab[i]; k++)
+                {
+                PosortowaneDaneWej<<tabsort[j][k]<<"\n";
+                }
+             PosortowaneDaneWej.close();
+    }
+            std::cout<<"Posortowano baze i zapisano do pliku\n";
+            
+            
+            delete [] merge;
+            delete [] quick;
+            delete [] intro;
+
+            
+            
+        }
            
     return 0;
         
