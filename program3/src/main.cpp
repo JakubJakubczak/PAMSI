@@ -63,23 +63,19 @@ int main()
         Plansza.Rysuj();
         std::cout<<"Wpisz ruch(np. B2): ";
         std::cin>>odp;
-        if( !( int(odp[0])-65 >= 0 && int(odp[0])-65 < rozmiar  && odp[1]-48>0 && odp[1]-48<=rozmiar )) // sprawdzenie czy ruch miesci sie w tablicy
+        // sprawdzenie czy ruch miesci sie w tablicy i czy wybrane miejsce nie jest zajete
+        if(  !( int(odp[0])-65 >= 0 && int(odp[0])-65 < rozmiar  && odp[1]-48>0 && odp[1]-48<=rozmiar)  ||  Plansza.CzyJestZajete( odp[1]-49, int(odp[0])-65 ) ) 
         {   
-            while(!((int(odp[0])-65) >= 0 && (int(odp[0])-65) < rozmiar  && odp[1]-48>0 && odp[1]-48<=rozmiar ))
+            while( !((int(odp[0])-65) >= 0 && (int(odp[0])-65) < rozmiar  && odp[1]-48>0 && odp[1]-48<=rozmiar ) || Plansza.CzyJestZajete( odp[1]-49, int(odp[0])-65 )  )
             {
             std::cout<<"Taki ruch jest niemozliwy. Wpisz ponownie poprawny. "<<std::endl;
             std::cin>>odp;
             }
         }
-        if( Plansza.CzyJestZajete( odp[1]-49, int(odp[0])-65 ) ) 
-        {
-            while(Plansza.CzyJestZajete(odp[1]-49,int(odp[0])-65))
-            {
-                std::cout<<"To miejsce jest zajete. Wpisz ponownie "<<std::endl;
-                std::cin>>odp;
-            }
-        }
-        Plansza.Ustaw( odp[1]-49,int(odp[0])-65);
+       Plansza.Ustaw( odp[1]-49,int(odp[0])-65);
+        // Plansza.Ustaw(3,2);
+        //  Plansza.Ustaw(2,3);
+        //   Plansza.Ustaw(1,4);
         Plansza.ZmienTure();
         }
         Plansza.Rysuj();

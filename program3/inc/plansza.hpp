@@ -174,6 +174,101 @@ int plansza::StanGry() const
         }
        }  
     }
+
+
+    // sprawdzanie na skosy
+
+    // do gory i w lewo
+    int zm=0; // zmienna pomocnicza do petli
+    int pom=0;;
+    for(int i=0; i<wymiar-doWygrania+1; i++)   
+    {
+       licznik=1;
+       zm=0;
+       pom=i;
+       for( int j=0; j<wymiar-doWygrania-i+2; j++)   
+       {    
+        if(pozycja[pom][zm]==pozycja[pom+1][zm+1]) licznik++;
+        else licznik=1;
+
+        if(licznik==doWygrania)
+        {
+            if(pozycja[pom][zm]==znakGracza) return 1; // wygrana gracza
+            if(pozycja[pom][zm]==znakAI) return -1; // wygrana AI
+        }
+        zm++;
+        pom++;
+       }  
+    }
+
+    // do gory i w prawo
+    zm=0;
+    pom=0;
+    for(int i=0; i<wymiar-doWygrania+1; i++)   
+    {
+       licznik=1;
+       zm=i;
+       pom=0;
+       for( int j=0; j<wymiar-doWygrania-i+2; j++)   
+       {    
+        if(pozycja[pom][zm]==pozycja[pom+1][zm+1]) licznik++;
+        else licznik=1;
+
+        if(licznik==doWygrania)
+        {
+            if(pozycja[pom][zm]==znakGracza) return 1; // wygrana gracza
+            if(pozycja[pom][zm]==znakAI) return -1; // wygrana AI
+        }
+        zm++;
+        pom++;
+       }  
+    }
+
+     // do dolu i w prawo
+    zm=wymiar-1;
+    pom=0;
+    for(int i=0; i<wymiar-doWygrania+1; i++)   
+    {
+       licznik=1;
+       zm=wymiar-1 -i;
+       pom=0;
+       for( int j=0; j<wymiar-doWygrania-i+2; j++)   
+       {    
+        if(pozycja[pom][zm]==pozycja[pom+1][zm-1]) licznik++;
+        else licznik=1;
+
+        if(licznik==doWygrania)
+        {
+            if(pozycja[pom][zm]==znakGracza) return 1; // wygrana gracza
+            if(pozycja[pom][zm]==znakAI) return -1; // wygrana AI
+        }
+        zm--;
+        pom++;
+       }  
+    }
+
+     // do dolu i w lewo
+    zm=wymiar-1;
+    pom=0;
+    for(int i=0; i<wymiar-doWygrania+1; i++)   
+    {
+       licznik=1;
+       zm=wymiar-1;
+       pom=i;
+       for( int j=0; j<wymiar-doWygrania-i+2; j++)   
+       {    
+        if(pozycja[pom][zm]==pozycja[pom+1][zm-1]) licznik++;
+        else licznik=1;
+
+        if(licznik==doWygrania)
+        {
+            if(pozycja[pom][zm]==znakGracza) return 1; // wygrana gracza
+            if(pozycja[pom][zm]==znakAI) return -1; // wygrana AI
+        }
+        zm--;
+        pom++;
+       }  
+    }
     
     return 0;
 }
