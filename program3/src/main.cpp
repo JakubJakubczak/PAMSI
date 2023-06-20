@@ -13,7 +13,6 @@ int main()
     int rekurencja;
     while(odp!="k")
     {
-        // system("cls");
         std::cout<<"Gra w kolko i krzyzyk"<<std::endl;
         std::cout<<"Podaj rozmiar tablicy(kwadratowej): "<<std::endl;
         std::cin>>rozmiar;
@@ -92,7 +91,6 @@ int main()
         Plansza.Ustaw(odp[1]-49, int(odp[0])-65);
         Plansza.ZmienTure(-1);
         }
-        // if( !(Plansza.StanGry()==0 && !Plansza.CzyJestPelna() )) continue; // sprawdzamy czy po wykonaniu ruchu przez gracza nie doszlismy do konca gry
         
         if(Plansza.CzyTuraGracza()==0)
         {

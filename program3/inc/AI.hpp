@@ -12,14 +12,14 @@ class AI : public plansza
      int glebokosc_max;  // glebokosc rekursji
      int x,y;  // ruch AI
 
-    int minimax(plansza Plansza, int glebokosc, /*int alpha, int beta,*/ bool maksymalizacja);
+    int minimax(plansza Plansza, int glebokosc, int alpha, int beta, bool maksymalizacja);
     void ruchAI(plansza Plansza);
     // konstruktor
     AI(int glebokoscMax) : glebokosc_max(glebokoscMax) {};
 };
 
 
-int AI::minimax(plansza Plansza, int glebokosc,/* int alpha, int beta,*/ bool maksymalizacja)
+int AI::minimax(plansza Plansza, int glebokosc, int alpha, int beta, bool maksymalizacja)
 {
     int eval;
 
@@ -38,14 +38,14 @@ int AI::minimax(plansza Plansza, int glebokosc,/* int alpha, int beta,*/ bool ma
                 if (!Plansza.CzyJestZajete(i, j)) {
                     Plansza.ZmienTure(1);
                     Plansza.Ustaw(i, j);
-                    eval = minimax(Plansza, glebokosc - 1, /*alpha, beta,*/ false);
+                    eval = minimax(Plansza, glebokosc - 1, alpha, beta, false);
                     max = std::max(max, eval);
-                    // alpha = std::max(alpha, eval);
-                    // if (alpha >= beta)
-                    // {    Plansza.Usun(i, j);
-                    //      break;
-                    // }
-                    // else 
+                    alpha = std::max(alpha, eval);
+                    if (alpha >= beta)
+                    {    Plansza.Usun(i, j);
+                         break;
+                    }
+                    else 
                     Plansza.Usun(i, j);
                 }
             }
@@ -61,14 +61,14 @@ int AI::minimax(plansza Plansza, int glebokosc,/* int alpha, int beta,*/ bool ma
                 if (!Plansza.CzyJestZajete(i, j)) {
                     Plansza.ZmienTure(-1);
                     Plansza.Ustaw(i, j);
-                    eval=minimax(Plansza, glebokosc - 1, /*alpha, beta,*/ true);
+                    eval=minimax(Plansza, glebokosc - 1, alpha, beta, true);
                     min = std::min(min, eval);
-                    // beta = std::min(beta, eval);
-                    // if (beta <= alpha)
-                    // {   Plansza.Usun(i, j);
-                    //     break;
-                    // }
-                    // else 
+                    beta = std::min(beta, eval);
+                    if (beta <= alpha)
+                    {   Plansza.Usun(i, j);
+                        break;
+                    }
+                    else 
                     Plansza.Usun(i, j);
                 }
             }
@@ -88,7 +88,7 @@ void AI::ruchAI(plansza Plansza)
             if (!Plansza.CzyJestZajete(i, j)) {
                 Plansza.ZmienTure(-1);
                 Plansza.Ustaw(i, j);
-                obecna = minimax(Plansza, glebokosc_max, /*-maxeval, maxeval,*/ true);
+                obecna = minimax(Plansza, glebokosc_max, -maxeval, maxeval, true);
                 Plansza.Usun(i, j);
                 if (obecna < najlepsza) {
                     x = i;
