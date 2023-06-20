@@ -21,11 +21,12 @@ class plansza
     bool CzyJestZajete(int x, int y) const;  // sprawdza czy wybrane pole jest zajete 
     void Resetuj(); // Resteuje plansze
     bool CzyTuraGracza() const;
-    void ZmienTure();
+    void ZmienTure(int Tura);
     void Ustaw(int x, int y); // ustawia dany znak na polu (x,y)
     void Usun(int x, int y); // usuwa dany znak na polu (x,y) 
     // konstruktor
     plansza(int Wymiar, int DoWygrania);
+    plansza(){};
 };
 
 plansza::plansza(int Wymiar, int DoWygrania): pozycja(Wymiar, std::vector<char>(Wymiar))
@@ -80,10 +81,12 @@ bool plansza::CzyTuraGracza() const
     else return 0; 
 }
 
-void plansza::ZmienTure()
+// 1 dla gracza
+// -1 dla bota
+void plansza::ZmienTure(int Tura)
 {
-    if(tura==1) tura=0;
-    else tura=1;
+    if(Tura==1) tura=1;
+    else if(Tura==-1)  tura=-1;
 }
 
 void plansza::Ustaw(int x, int y)
